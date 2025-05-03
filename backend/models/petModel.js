@@ -19,6 +19,7 @@ const petSchema = new mongoose.Schema({
     },
     mood : {
         type : String,
+        default : "Happy"
     },
     adopted : {
         type : Boolean,
