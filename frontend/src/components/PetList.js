@@ -68,13 +68,16 @@ function PetList({ search, filter, moodFilter, setMoodFilter, questionFilter, se
   const filteredPets = pets.filter((pet) => {
     const matchesSearch = pet.name.toLowerCase().includes(search.toLowerCase());
     const matchesSpecies = filter ? pet.species === filter : true;
+    if (filter === "Other") {
+      return pet.species !== "Dog" && pet.species !== "Cat";
+    }
     const matchesAge = petAge ? pet.age === Number(petAge) : true;
     const matchesPersonality = petPersonality ? pet.personality.toLowerCase().includes(petPersonality.toLowerCase()) : true;
     const matchesMood = moodFilter
       ? pet.mood.toLowerCase() === moodFilter.toLowerCase()
       : true;
 
-    return matchesSearch && matchesSpecies && matchesMood && matchesAge && matchesPersonality;
+    return matchesSearch && matchesSpecies && matchesMood && matchesAge && matchesPersonality && pet.species === filter;
   });
 
   return (

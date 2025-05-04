@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Hero from "./Hero";
 import PetList from "./../components/PetList";
 import AdoptionGuide from "./AdoptionGuide";
 import { AddPetForm } from "./../components/AddPetForm";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
+import FilterBar from "../components/FilterBar";
 
 function HomePage() {
   const [search, setSearch] = useState("");
@@ -18,7 +18,7 @@ function HomePage() {
   return (
     <>
       <Header search={search} setSearch={setSearch} />
-      <Hero
+      <FilterBar
         filter={filter}
         setFilter={setFilter}
         petAge={petAge}
