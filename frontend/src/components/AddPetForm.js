@@ -1,11 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { api } from "../services/ApiProvider";
 import { background } from "../assets/assets";
 
-export const AddPetForm = () => {
-  const { url, addPet } = useContext(api);
+export const AddPetForm = ({ selectedPet }) => {
+  const { url, addPet, updatePet } = useContext(api);
 
   const [name, setName] = useState("");
   const [species, setSpecies] = useState("");
@@ -15,24 +15,48 @@ export const AddPetForm = () => {
   const onSubmitHandler = async (event) => {
     event.preventDefault();
 
-    const newPet = {
-      name,
-      species,
-      age,
-      personality,
-    };
+    let newPet = { name, species, age, personality };
 
-    const response = await axios.post(`${url}${addPet}`, newPet);
-    if (response.data.success) {
-      setName("");
-      setSpecies("");
-      setAge("");
-      setPersonality("");
-      toast.success(response.data.message);
-    } else {
-      toast.error(response.data.message);
+    let endpoint = addPet;
+    let method = "post";
+
+    if (selectedPet && selectedPet._id) {
+      endpoint = updatePet.replace(":id", selectedPet._id);
+      method = "put";
+
+      newPet = { ...newPet, id: selectedPet._id };
+    }
+
+    try {
+      const response = await axios({
+        method,
+        url: `${url}${endpoint}`,
+        data: newPet,
+      });
+
+      if (response.data.success) {
+        setName("");
+        setSpecies("");
+        setAge("");
+        setPersonality("");
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong!");
     }
   };
+
+  useEffect(() => {
+    if (selectedPet) {
+      setName(selectedPet.name || "");
+      setSpecies(selectedPet.species || "");
+      setAge(selectedPet.age || "");
+      setPersonality(selectedPet.personality || "");
+    }
+  }, [selectedPet]);
 
   return (
     <div
@@ -57,13 +81,16 @@ export const AddPetForm = () => {
         Pet Registration ...
       </h2>
 
-      <form 
+      <form
         onSubmit={onSubmitHandler}
         className="justify-center w-full max-w-lg p-5 mt-10 bg-white/80 rounded-lg"
       >
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-name">
+            <label
+              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="grid-name"
+            >
               Name
             </label>
             <input
@@ -78,7 +105,10 @@ export const AddPetForm = () => {
           </div>
 
           <div className="w-full md:w-1/2 px-3">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-species">
+            <label
+              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="grid-species"
+            >
               Species
             </label>
             <input
@@ -93,7 +123,10 @@ export const AddPetForm = () => {
           </div>
 
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-age">
+            <label
+              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="grid-age"
+            >
               Age
             </label>
             <input
@@ -108,7 +141,10 @@ export const AddPetForm = () => {
           </div>
 
           <div className="w-full md:w-1/2 px-3">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-personality">
+            <label
+              className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+              htmlFor="grid-personality"
+            >
               Personality
             </label>
             <input
@@ -127,7 +163,7 @@ export const AddPetForm = () => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
         >
-          Submit
+          {selectedPet ? "Update" : "Submit"}
         </button>
       </form>
     </div>

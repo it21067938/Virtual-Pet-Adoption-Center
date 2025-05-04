@@ -1,7 +1,33 @@
 import React from "react";
 import { hero } from "../assets/assets";
 
-function Hero() {
+function Hero({
+  setFilter,
+  setQuestionFilter,
+  petAge,
+  setPetAge,
+  petPersonality,
+  setPetPersonality,
+}) {
+  function filterItem(value) {
+    setFilter(value);
+    setQuestionFilter(value);
+
+    const petListElement = document.getElementById("pet-list");
+    if (petListElement) {
+      petListElement.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  function explorePets() {
+    // When Explore button is clicked
+    setQuestionFilter(`${petAge} years old, ${petPersonality}`);
+    const petListElement = document.getElementById("pet-list");
+    if (petListElement) {
+      petListElement.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
   return (
     <div className="p-8 mt-7">
       <div className="flex space-x-10">
@@ -12,22 +38,34 @@ function Hero() {
             <span className="text-purple-800">Pet</span> Companionship
           </p>
 
-          <p className="text-2xl  mt-5 mb-6">
+          <p className="text-2xl mt-5 mb-6">
             Discover Your New Best Friend ...
           </p>
-          <button class="bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded">
+
+          <button
+            onClick={() => filterItem("Dog")}
+            className="bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded"
+          >
             Dog
           </button>
-          <button class="ml-5 bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded">
+          <button
+            onClick={() => filterItem("Cat")}
+            className="ml-5 bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded"
+          >
             Cat
           </button>
-          <button class="ml-5 bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded">
+          <button
+            onClick={() => filterItem("Other")}
+            className="ml-5 bg-transparent hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded"
+          >
             Other
           </button>
+
+          {/* Extra form inputs */}
           <div className="mt-3 justify-end">
             <label
-              for="small-input"
-              class="block mb-2 text-m font-medium text-gray-600"
+              htmlFor="small-input"
+              className="block mb-2 text-m font-medium text-gray-600"
             >
               Do you prefer a younger pet or a more mature companion?
             </label>
@@ -35,11 +73,13 @@ function Hero() {
               type="number"
               id="small-input"
               placeholder="1"
-              class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-blue-500 focus:border-blue-500"
+              value={petAge}
+              onChange={(e) => setPetAge(e.target.value)}
+              className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-blue-500 focus:border-blue-500"
             />
             <label
-              for="small-input"
-              class="mt-3 block mb-2 text-m font-medium text-gray-600"
+              htmlFor="small-input"
+              className="mt-3 block mb-2 text-m font-medium text-gray-600"
             >
               What personality fits you best?
             </label>
@@ -47,11 +87,13 @@ function Hero() {
               type="text"
               id="small-input"
               placeholder="Friendly"
-              class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-blue-500 focus:border-blue-500"
+              value={petPersonality}
+              onChange={(e) => setPetPersonality(e.target.value)}
+              className="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-blue-500 focus:border-blue-500"
             />
 
             <div className="flex justify-end mt-3">
-              <button className="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 border purple-blue-700 rounded-3xl flex items-center">
+              <button  onClick={explorePets} className="bg-purple-500 hover:bg-purple-700 text-white py-2 px-4 border purple-blue-700 rounded-3xl flex items-center">
                 Explore Available Pets
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

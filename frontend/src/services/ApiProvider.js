@@ -9,13 +9,15 @@ export const ApiProvider = ({ children }) => {
   const getPets = "/GET/pets";
   const adoptPet = "/PATCH/pets/:id/adopt";
   const deletePet = "/DELETE/pets/:id";
+  const updatePet = "/PUT/pets/:id";
 
   const apiContextValue = {
     addPet,
     url,
     getPets,
     adoptPet,
-    deletePet
+    deletePet,
+    updatePet
   };
 
   return (

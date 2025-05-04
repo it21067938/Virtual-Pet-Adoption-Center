@@ -1,13 +1,14 @@
 import {
   Disclosure,
   DisclosureButton,
-  DisclosurePanel
+  DisclosurePanel,
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { logo } from "../../assets/assets";
+import SearchComponent from "../SearchComponent";
 
 const navigation = [
-  { name: "Pet Place", href: "/" },
+  { name: "Pet Place", href: "#" },
   { name: "Pet Journey ", href: "#pet-journey", current: false },
   { name: "Give a Pet a Home", href: "#pet-list", current: false },
   { name: "Pet Registration", href: "#pet-add", current: false },
@@ -17,14 +18,14 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Header() {
+export default function Header({ search, setSearch }) {
   return (
     <Disclosure as="nav" className="bg-white">
       <div className="mx-auto max-w-8xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-20 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
             {/* Mobile menu button*/}
-            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
+            <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-purple-400 hover:bg-purple-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset">
               <span className="absolute -inset-0.5" />
               <span className="sr-only">Open main menu</span>
               <Bars3Icon
@@ -71,33 +72,9 @@ export default function Header() {
               <BellIcon aria-hidden="true" className="size-6" />
             </button>
 
-            {/* Search bar */}
-            <div class="relative hidden md:block">
-              <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  class="w-4 h-4 text-gray-500 dark:text-gray-500"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-                <span class="sr-only">Search icon</span>
-              </div>
-              <input
-                type="text"
-                id="search-navbar"
-                class="block w-full p-2 ps-10 text-sm text-white-900 border border-gray-500 rounded-lg bg-gray-100 focus:ring-purple-500 focus:border-purple-500 white:bg-gray-800 white:border-gray-800 dark:placeholder-gray-500 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search..."
-              />
-            </div>
+            {/* search */}
+            <SearchComponent search={search} setSearch={setSearch} />
+
           </div>
         </div>
       </div>

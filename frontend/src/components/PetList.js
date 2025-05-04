@@ -3,10 +3,23 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { api } from "../services/ApiProvider";
 import { celebration } from "../assets/assets";
+import MoodsFilter from "./MoodsFilter";
+import { pdfGenerator } from "./pdf/pdfGenerator";
 
-function PetList() {
+function PetList({ search, filter, moodFilter, setMoodFilter, questionFilter, setSelectedPet, setQuestionFilter, petAge, petPersonality }) {
+
   const { url, getPets, adoptPet, deletePet } = useContext(api);
   const [pets, setPets] = useState([]);
+
+  const handleUpdate = (petId) => {
+    const petToUpdate = pets.find((pet) => pet._id === petId);
+    setSelectedPet(petToUpdate);
+
+    const petListElement = document.getElementById("pet-add");
+    if (petListElement) {
+      petListElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -52,6 +65,18 @@ function PetList() {
     }
   };
 
+  const filteredPets = pets.filter((pet) => {
+    const matchesSearch = pet.name.toLowerCase().includes(search.toLowerCase());
+    const matchesSpecies = filter ? pet.species === filter : true;
+    const matchesAge = petAge ? pet.age === Number(petAge) : true;
+    const matchesPersonality = petPersonality ? pet.personality.toLowerCase().includes(petPersonality.toLowerCase()) : true;
+    const matchesMood = moodFilter
+      ? pet.mood.toLowerCase() === moodFilter.toLowerCase()
+      : true;
+
+    return matchesSearch && matchesSpecies && matchesMood && matchesAge && matchesPersonality;
+  });
+
   return (
     <>
       <h2 className="flex items-center justify-center gap-2 text-4xl mt-8 font-semibold text-gray-800">
@@ -76,9 +101,11 @@ function PetList() {
         Looking for a Home ...
       </h2>
 
-      <div className="flex p-8 flex-wrap mt-8 gap-10 justify-center">
-        {pets.length > 0 ? (
-          pets.map((pet) => (
+      <MoodsFilter moodFilter={moodFilter} setMoodFilter={setMoodFilter} />
+
+      <div className="flex p-8 flex-wrap mt-2 gap-10 justify-center">
+        {filteredPets.length > 0 ? (
+          filteredPets.map((pet) => (
             <div
               key={pet._id}
               className="w-64 h-80 p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col justify-between"
@@ -151,20 +178,26 @@ function PetList() {
               <div className="flex justify-between items-center mt-4">
                 {pet.adopted ? (
                   <>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6 text-gray-600"
+                    <div
+                      onClick={() => pdfGenerator(pet)}
+                      className="cursor-pointer"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
-                      />
-                    </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6 text-gray-600"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
+                        />
+                      </svg>
+                    </div>
+
                     <div
                       onClick={() => handleDelete(pet._id)}
                       className="cursor-pointer"
@@ -198,6 +231,7 @@ function PetList() {
                       strokeWidth={1.5}
                       stroke="currentColor"
                       className="size-6 text-blue-800"
+                      onClick={() => handleUpdate(pet._id)}
                     >
                       <path
                         strokeLinecap="round"

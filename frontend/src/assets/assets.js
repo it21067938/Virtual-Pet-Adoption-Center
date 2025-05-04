@@ -1,4 +1,5 @@
 import logo from './logo.png'
+import whiteLogo from './whiteLogo.png'
 import hero from './hero.jpg'
 import adoptPet from './adoptpet.gif'
 import heart from './heart.gif'
@@ -11,3 +12,4 @@ export {adoptPet};
 export {heart};
 export {background};
 export {celebration};
+export {whiteLogo};
